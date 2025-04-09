@@ -42,14 +42,17 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .main-content {
-  flex: 1;
-  padding: 2rem;
+  flex: 1 0 auto;
+  padding: 1rem;
+  padding-top: 2rem;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  min-height: calc(100vh - 160px); /* Account for header and footer */
 }
 
 .product-grid {
@@ -205,4 +208,84 @@ nav button {
 
 .bounce {
   animation: bounce 2s infinite;
+}
+
+footer {
+  flex-shrink: 0;
+  width: 100%;
+  bottom: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Add popup styles */
+.cart-popup {
+  position: fixed;
+  right: 20px;
+  top: 70px;
+  z-index: 1000;
+  max-width: 350px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .cart-popup {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}
+
+/* Responsive spacing */
+@media (min-width: 600px) {
+  .main-content {
+    padding: 2rem;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 600px) {
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.5rem !important; }
+  h3 { font-size: 1.25rem !important; }
+  h4 { font-size: 1.1rem !important; }
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive grid system helper */
+.grid-responsive {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Responsive mobile menu */
+@media (max-width: 600px) {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+}
+
+/* Touch-friendly targets */
+@media (max-width: 600px) {
+  button, 
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
 }
