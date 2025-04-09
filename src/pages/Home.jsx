@@ -48,7 +48,7 @@ export default function Home() {
     if (selectedCategory !== "all") {
       result = result.filter(product => product.category === selectedCategory);
     }
-    
+
     // Apply search filter
     if (searchQuery) {
       result = result.filter(product => 
@@ -73,59 +73,118 @@ export default function Home() {
   return (
     <Container maxWidth="xl">
       {/* Hero Section */}
-      <Paper 
-        elevation={0}
-        sx={{ 
-          p: 4, 
-          mb: 4, 
-          mt: 2, 
-          borderRadius: 2,
-          background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-          color: 'white'
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        <Typography variant="h3" gutterBottom>
-          Welcome to Our Shop
-        </Typography>
-        <Typography variant="h6">
-          Discover amazing products at great prices
-        </Typography>
-      </Paper>
+        <Paper 
+          elevation={3}
+          sx={{ 
+            p: { xs: 3, md: 6 }, 
+            mb: 4, 
+            mt: 2, 
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.01)',
+            }
+          }}
+        >
+          <Typography 
+            variant="h2" 
+            gutterBottom
+            sx={{
+              fontWeight: 'bold',
+              fontSize: { xs: '2rem', md: '3.5rem' },
+              textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+            }}
+          >
+            Welcome to Our Shop
+          </Typography>
+          <Typography 
+            variant="h5"
+            sx={{
+              opacity: 0.9,
+              fontSize: { xs: '1.2rem', md: '1.5rem' } 
+            }}
+          >
+            Discover amazing products at great prices
+          </Typography>
+        </Paper>
+      </motion.div>
 
       {/* Search and Filter Section */}
       <Box sx={{ mb: 4 }}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{ mb: 2 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-          <Chip
-            label="All"
-            onClick={() => setSelectedCategory("all")}
-            color={selectedCategory === "all" ? "primary" : "default"}
-            variant={selectedCategory === "all" ? "filled" : "outlined"}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ 
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                backgroundColor: 'white',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                  '& fieldset': {
+                    borderColor: 'primary.main',
+                  }
+                },
+                '&.Mui-focused': {
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                }
+              }
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search sx={{ color: 'text.secondary' }}/>
+                </InputAdornment>
+              )
+            }}
           />
-          {categories.map(category => (
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              gap: 1.5, 
+              flexWrap: 'wrap', 
+              '& .MuiChip-root': { 
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }
+              }
+            }}
+          >
             <Chip
-              key={category}
-              label={category.charAt(0).toUpperCase() + category.slice(1)}
-              onClick={() => setSelectedCategory(category)}
-              color={selectedCategory === category ? "primary" : "default"}
-              variant={selectedCategory === category ? "filled" : "outlined"}
+              label="All"
+              onClick={() => setSelectedCategory("all")}
+              color={selectedCategory === "all" ? "primary" : "default"}
+              variant={selectedCategory === "all" ? "filled" : "outlined"}
             />
-          ))}
-        </Box>
+            {categories.map(category => (
+              <Chip
+                key={category}
+                label={category.charAt(0).toUpperCase() + category.slice(1)}
+                onClick={() => setSelectedCategory(category)}
+                color={selectedCategory === category ? "primary" : "default"}
+                variant={selectedCategory === category ? "filled" : "outlined"}
+              />
+            ))}
+          </Box>
+        </motion.div>
       </Box>
 
       {/* Products Grid */}
@@ -143,7 +202,7 @@ export default function Home() {
           style={{
             display: 'grid',
             gap: '24px',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))'
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))'  // Responsive grid
           }}
         >
           {filteredProducts.map((product) => (
