@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import Confetti from 'react-confetti';
 import { motion, AnimatePresence } from "framer-motion";
+import {ThemeContext} from "../context/ThemeContext";
 import { 
   Container, 
   Paper, 
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
   const [orderPlaced, setOrderPlaced] = useState(false);
+    const { darkMode } = useContext(ThemeContext);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -29,6 +31,15 @@ export default function Cart() {
     clearCart();
     setOrderPlaced(true);
     setTimeout(() => setShowConfetti(false), 5000);
+  };
+
+  const handleDragEnd = (event, info, itemId) => {
+    if (Math.abs(info.offset.x) > 100) {
+      removeFromCart(itemId);
+      if ('vibrate' in navigator) {
+        navigator.vibrate(100);
+      }
+    }
   };
 
   return (
@@ -61,8 +72,20 @@ export default function Cart() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 layout
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragEnd={(event, info) => handleDragEnd(event, info, item.id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Paper sx={{ p: 2, mb: 2 }}>
+                <Paper sx={{ 
+                  p: 2, 
+                  mb: 2,
+                  background: darkMode 
+                    ? 'linear-gradient(45deg, rgba(66,66,66,0.9), rgba(48,48,48,0.9))'
+                    : 'linear-gradient(45deg, rgba(255,255,255,0.9), rgba(250,250,250,0.9))',
+                  cursor: 'grab'
+                }}>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={3}>
                       <img src={item.image} alt={item.title} style={{ width: '100%', maxWidth: '100px' }} />

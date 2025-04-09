@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import { AddShoppingCart } from '@mui/icons-material';
 import { useContext, useRef, useState } from 'react';
 import { CartContext } from "../context/CartContext";
+import { ThemeContext } from "../context/ThemeContext";
 import CartAnimation from './CartAnimation';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useContext(CartContext);
+  const { darkMode } = useContext(ThemeContext);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationPositions, setAnimationPositions] = useState(null);
   const buttonRef = useRef(null);
@@ -52,8 +54,10 @@ export default function ProductCard({ product }) {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
+          transition: 'transform 0.3s, box-shadow 0.3s',
           '&:hover': {
-            boxShadow: 6,
+            transform: 'translateY(-8px)',
+            boxShadow: darkMode ? '0 8px 20px rgba(255,255,255,0.1)' : '0 8px 20px rgba(0,0,0,0.1)',
           }
         }}
       >
@@ -124,6 +128,24 @@ export default function ProductCard({ product }) {
               ref={buttonRef}
               variant="contained"
               onClick={handleAddToCart}
+              sx={{
+                position: 'relative',
+                overflow: 'hidden',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(255,255,255,0.2)',
+                  transform: 'translateX(-100%)',
+                  transition: 'transform 0.3s',
+                },
+                '&:hover::after': {
+                  transform: 'translateX(100%)',
+                }
+              }}
             >
               <AddShoppingCart />
             </Button>

@@ -39,6 +39,16 @@ export default function ProductDetail() {
   const { addToCart } = useContext(CartContext);
   const [showQR, setShowQR] = useState(false);
   const [imageZoom, setImageZoom] = useState(false);
+  const [imageScale, setImageScale] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const bounds = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - bounds.left) / bounds.width;
+    const y = (e.clientY - bounds.top) / bounds.height;
+    setImageScale(1 + Math.min(x * y, 0.5));
+  };
 
   useEffect(() => {
     setError(null);
@@ -88,19 +98,25 @@ export default function ProductDetail() {
         <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
-              <motion.div whileHover={{ scale: 1.02 }}>
-                <img 
-                  src={product.image} 
-                  alt={product.title}
-                  onClick={() => setImageZoom(true)}
-                  style={{ 
-                    width: '100%', 
-                    maxHeight: '500px',
-                    objectFit: 'contain',
-                    cursor: 'zoom-in'
-                  }}
-                />
-              </motion.div>
+              <motion.img 
+                src={product.image} 
+                alt={product.title}
+                whileHover={{ scale: 1.1 }}
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.1}
+                onMouseDown={() => setIsDragging(true)}
+                onMouseUp={() => setIsDragging(false)}
+                onMouseMove={handleMouseMove}
+                style={{ 
+                  width: '100%', 
+                  maxHeight: '500px',
+                  objectFit: 'contain',
+                  cursor: 'grab',
+                  scale: imageScale,
+                  transition: 'scale 0.2s'
+                }}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h4" gutterBottom>

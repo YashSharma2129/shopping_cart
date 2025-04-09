@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, Button, Badge, IconButton, Typography, Tooltip, Avatar, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, Button, Badge, IconButton, Typography, Tooltip, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { ShoppingCart, Home, Logout, DarkMode, LightMode, Menu } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { logout } from "../utils/auth";
 import { ThemeContext } from "../context/ThemeContext";
@@ -13,6 +13,15 @@ export default function Header() {
   const { darkMode, toggleTheme } = useContext(ThemeContext);
   const [isHovered, setIsHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -23,14 +32,16 @@ export default function Header() {
     <>
       <AppBar 
         position="sticky" 
-        elevation={0}
+        elevation={isScrolled ? 4 : 0}
         sx={{
           backdropFilter: 'blur(8px)',
           backgroundColor: darkMode ? 'rgba(18, 18, 18, 0.9)' : 'rgba(255, 255, 255, 0.95)',
           borderBottom: '1px solid',
           borderColor: darkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.2)',
           color: darkMode ? '#fff' : '#1a1a1a',
-          transition: 'all 0.3s ease-in-out'
+          transition: 'all 0.3s ease-in-out',
+          transform: `translateY(${isScrolled ? 0 : 0}px)`,
+          height: isScrolled ? '60px' : '70px',
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -121,7 +132,10 @@ export default function Header() {
                     '& .MuiBadge-badge': {
                       animation: cartItems.length ? 'cartBounce 0.5s ease' : 'none',
                       transition: 'all 0.2s ease-in-out',
-                      transform: isHovered ? 'scale(1.2)' : 'scale(1)'
+                      transform: isHovered ? 'scale(1.2)' : 'scale(1)',
+                      '&:hover': {
+                        transform: 'scale(1.2)',
+                      }
                     },
                     '@keyframes cartBounce': {
                       '0%': { transform: 'scale(1)' },
