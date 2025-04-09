@@ -1,11 +1,12 @@
-import { AppBar, Toolbar, Button, Badge, IconButton, Typography, Tooltip, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import React from 'react';
+import { AppBar, Toolbar, Button, Badge, IconButton, Typography, Tooltip, Drawer, List, ListItem, ListItemIcon, ListItemText, Box, useMediaQuery } from '@mui/material';
 import { ShoppingCart, Home, Logout, DarkMode, LightMode, Menu } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { logout } from "../utils/auth";
 import { ThemeContext } from "../context/ThemeContext";
-import { Box } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const { cartItems } = useContext(CartContext);
@@ -14,6 +15,49 @@ export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 600px)');
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const menuItems = [
+    { icon: <Home />, text: 'Home', path: '/', badge: null },
+    { icon: <ShoppingCart />, text: 'Cart', path: '/cart', badge: cartItems.length },
+    { icon: <Logout />, text: 'Logout', onClick: handleLogout }
+  ];
+
+  const drawerVariants = {
+    closed: {
+      x: "-100%",
+      boxShadow: "0px 0px 0px rgba(0,0,0,0)"
+    },
+    open: {
+      x: 0,
+      boxShadow: "10px 0px 50px rgba(0,0,0,0.2)",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 40
+      }
+    }
+  };
+
+  const itemVariants = {
+    closed: { x: -20, opacity: 0 },
+    open: i => ({
+      x: 0,
+      opacity: 1,
+      transition: {
+        delay: i * 0.1,
+        type: "spring",
+        stiffness: 300
+      }
+    })
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,11 +66,6 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   return (
     <>
@@ -41,7 +80,7 @@ export default function Header() {
           color: darkMode ? '#fff' : '#1a1a1a',
           transition: 'all 0.3s ease-in-out',
           transform: `translateY(${isScrolled ? 0 : 0}px)`,
-          height: isScrolled ? '60px' : '70px',
+          height: isMobile ? '56px' : (isScrolled ? '60px' : '70px'),
         }}
       >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -187,38 +226,140 @@ export default function Header() {
         </Toolbar>
       </AppBar>
 
-      <Drawer
-        anchor="left"
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: 240,
-            bgcolor: darkMode ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(8px)',
-            color: darkMode ? '#fff' : '#1a1a1a',
-          }
-        }}
-      >
-        <List>
-          <ListItem button component={Link} to="/" onClick={() => setMobileMenuOpen(false)}>
-            <ListItemIcon><Home sx={{ color: darkMode ? '#fff' : '#1a1a1a' }} /></ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem button component={Link} to="/cart" onClick={() => setMobileMenuOpen(false)}>
-            <ListItemIcon>
-              <Badge badgeContent={cartItems.length} color="error">
-                <ShoppingCart sx={{ color: darkMode ? '#fff' : '#1a1a1a' }} />
-              </Badge>
-            </ListItemIcon>
-            <ListItemText primary="Cart" />
-          </ListItem>
-          <ListItem button onClick={handleLogout}>
-            <ListItemIcon><Logout sx={{ color: darkMode ? '#fff' : '#1a1a1a' }} /></ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </Drawer>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <Drawer
+            anchor="left"
+            open={mobileMenuOpen}
+            onClose={() => !isDragging && setMobileMenuOpen(false)}
+            sx={{
+              '& .MuiDrawer-paper': {
+                width: 240,
+                bgcolor: 'transparent',
+                boxShadow: 'none',
+                border: 'none'
+              }
+            }}
+          >
+            <motion.div
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={drawerVariants}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={(e, info) => {
+                setIsDragging(false);
+                if (info.offset.x < -50) {
+                  setMobileMenuOpen(false);
+                }
+              }}
+              style={{
+                width: '100%',
+                height: '100%',
+                background: darkMode 
+                  ? 'linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.95))'
+                  : 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,245,245,0.95))',
+                backdropFilter: 'blur(10px)',
+                borderRight: '1px solid',
+                borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: 10,
+                  fontSize: '12px',
+                  color: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'
+                }}
+              >
+                Swipe to close →
+              </motion.div>
+
+              <List sx={{ mt: 4 }}>
+                {menuItems.map((item, i) => (
+                  <motion.div
+                    key={item.text}
+                    custom={i}
+                    variants={itemVariants}
+                    whileHover={{ x: 15 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <ListItem
+                      button
+                      component={item.path ? Link : 'button'}
+                      to={item.path}
+                      onClick={item.onClick || (() => setMobileMenuOpen(false))}
+                      onMouseEnter={() => setHoveredItem(i)}
+                      onMouseLeave={() => setHoveredItem(null)}
+                      sx={{
+                        position: 'relative',
+                        overflow: 'hidden',
+                        my: 1,
+                        borderRadius: 2,
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          left: 0,
+                          width: '4px',
+                          height: '100%',
+                          background: darkMode 
+                            ? 'linear-gradient(45deg, #FF8E53, #FE6B8B)'
+                            : 'linear-gradient(45deg, #2196F3, #21CBF3)',
+                          opacity: hoveredItem === i ? 1 : 0,
+                          transition: 'opacity 0.3s'
+                        }
+                      }}
+                    >
+                      <ListItemIcon>
+                        <motion.div
+                          whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          {item.badge ? (
+                            <Badge 
+                              badgeContent={item.badge} 
+                              color="error"
+                              sx={{
+                                '& .MuiBadge-badge': {
+                                  transform: hoveredItem === i ? 'scale(1.2)' : 'scale(1)',
+                                  transition: 'transform 0.3s'
+                                }
+                              }}
+                            >
+                              {item.icon}
+                            </Badge>
+                          ) : (
+                            <Box sx={{ color: darkMode ? '#fff' : '#1a1a1a' }}>
+                              {item.icon}
+                            </Box>
+                          )}
+                        </motion.div>
+                      </ListItemIcon>
+                      <ListItemText 
+                        primary={item.text}
+                        sx={{
+                          '& .MuiListItemText-primary': {
+                            fontWeight: hoveredItem === i ? 700 : 400,
+                            transition: 'all 0.3s'
+                          }
+                        }}
+                      />
+                    </ListItem>
+                  </motion.div>
+                ))}
+              </List>
+            </motion.div>
+          </Drawer>
+        )}
+      </AnimatePresence>
     </>
   );
 }
