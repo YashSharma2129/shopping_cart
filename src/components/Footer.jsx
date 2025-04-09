@@ -103,10 +103,15 @@ export default function Footer() {
           mb: 2
         }}
       >
-        {['GitHub', 'Twitter', 'LinkedIn'].map((platform) => (
+        {[
+          { platform: 'GitHub', url: 'https://github.com/YashSharma2129' },
+          { platform: 'Twitter', url: 'https://x.com/YashSharma_21' },
+          { platform: 'LinkedIn', url: 'https://www.linkedin.com/in/yash-sharma-a7a074236/' },
+          {platform:' Portfolio', url: 'https://yash-nebula.vercel.app/'}
+        ].map(({ platform, url }) => (
           <IconButton
             key={platform}
-            href={`https://${platform.toLowerCase()}.com/YashSharma2129`}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             sx={{
@@ -116,7 +121,8 @@ export default function Footer() {
                 color: {
                   GitHub: '#333',
                   Twitter: '#1DA1F2',
-                  LinkedIn: '#0A66C2'
+                  LinkedIn: '#0A66C2',
+                  Portfolio: '#FF8E53'
                 }[platform]
               }
             }}
