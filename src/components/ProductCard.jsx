@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Button, Box, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box, Chip, Skeleton } from '@mui/material';
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AddShoppingCart } from '@mui/icons-material';
@@ -12,6 +12,7 @@ export default function ProductCard({ product }) {
   const { darkMode } = useContext(ThemeContext);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationPositions, setAnimationPositions] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const buttonRef = useRef(null);
 
   const item = {
@@ -69,9 +70,16 @@ export default function ProductCard({ product }) {
             overflow: 'hidden'
           }}
         >
+          {!imageLoaded && (
+            <Skeleton 
+              variant="rectangular" 
+              sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} 
+            />
+          )}
           <motion.img
             src={product.image}
             alt={product.title}
+            onLoad={() => setImageLoaded(true)}
             style={{
               position: 'absolute',
               top: 0,
@@ -79,7 +87,9 @@ export default function ProductCard({ product }) {
               width: '100%',
               height: '100%',
               objectFit: 'contain',
-              padding: '1rem'
+              padding: '1rem',
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out'
             }}
             whileHover={{ 
               scale: 1.1,
