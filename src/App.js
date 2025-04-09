@@ -11,6 +11,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { useEffect, useState } from 'react';
 import ThemeProvider from "./context/ThemeContext";
 import Footer from "./components/Footer";
+import WalletProvider from "./context/WalletContext";
 
 const PrivateRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -21,7 +22,7 @@ const AppLayout = () => {
   return (
     <div className="app-container">
       {location.pathname !== '/login' && <Header />}
-      <main className="main-content">
+      <main id="main-content" className="main-content">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
@@ -56,11 +57,41 @@ function App() {
       <ErrorBoundary>
         <ThemeProvider>
           <CssBaseline />
-          <CartProvider>
-            <div className={`app-container ${devMode ? 'dev-mode' : ''}`}>
-              <AppLayout />
-            </div>
-          </CartProvider>
+          <WalletProvider>
+            <CartProvider>
+              <div 
+                className={`app-container ${devMode ? 'dev-mode' : ''}`}
+                role="application"
+                aria-label="Shopping Application"
+              >
+                <a 
+                  href="#main-content" 
+                  className="skip-link"
+                  style={{ 
+                    position: 'absolute',
+                    left: '-9999px',
+                    top: 'auto',
+                    width: '1px',
+                    height: '1px',
+                    overflow: 'hidden',
+                    '&:focus': {
+                      position: 'fixed',
+                      top: '0',
+                      left: '0',
+                      width: 'auto',
+                      height: 'auto',
+                      padding: '16px',
+                      background: '#fff',
+                      zIndex: 9999,
+                    }
+                  }}
+                >
+                  Skip to main content
+                </a>
+                <AppLayout />
+              </div>
+            </CartProvider>
+          </WalletProvider>
         </ThemeProvider>
       </ErrorBoundary>
     </BrowserRouter>
