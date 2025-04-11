@@ -69,8 +69,8 @@ export default function Header() {
 
   return (
     <>
-      <AppBar 
-        position="sticky" 
+      <AppBar
+        position="sticky"
         elevation={isScrolled ? 4 : 0}
         sx={{
           backdropFilter: 'blur(8px)',
@@ -93,9 +93,9 @@ export default function Header() {
               <Menu />
             </IconButton>
             <Tooltip title="Home">
-              <IconButton 
-                color="inherit" 
-                component={Link} 
+              <IconButton
+                color="inherit"
+                component={Link}
                 to="/"
                 sx={{
                   transition: 'transform 0.2s',
@@ -107,13 +107,13 @@ export default function Header() {
                 <Home />
               </IconButton>
             </Tooltip>
-            <Typography 
-              variant="h6" 
-              component="span" 
-              sx={{ 
+            <Typography
+              variant="h6"
+              component="span"
+              sx={{
                 ml: 1,
                 display: { xs: 'none', sm: 'block' },
-                background: darkMode 
+                background: darkMode
                   ? 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)'
                   : 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                 WebkitBackgroundClip: 'text',
@@ -124,11 +124,11 @@ export default function Header() {
               Shop
             </Typography>
           </Box>
-          
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
               gap: 1,
               '& .MuiIconButton-root': {
                 color: darkMode ? '#fff' : '#1a1a1a',
@@ -141,8 +141,8 @@ export default function Header() {
             }}
           >
             <Tooltip title={darkMode ? "Light Mode" : "Dark Mode"}>
-              <IconButton 
-                color="inherit" 
+              <IconButton
+                color="inherit"
                 onClick={toggleTheme}
                 sx={{
                   animation: darkMode ? 'spin 0.5s ease-in-out' : 'none',
@@ -155,16 +155,17 @@ export default function Header() {
                 {darkMode ? <LightMode /> : <DarkMode />}
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Cart">
-              <IconButton 
-                color="inherit" 
-                component={Link} 
+              <IconButton
+                color="inherit"
+                component={Link}
                 to="/cart"
+                id="cart-icon"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <Badge 
+                <Badge
                   badgeContent={cartItems.length}
                   color="error"
                   sx={{
@@ -188,17 +189,17 @@ export default function Header() {
               </IconButton>
             </Tooltip>
 
-            <Button 
-              color="inherit" 
-              onClick={handleLogout} 
+            <Button
+              color="inherit"
+              onClick={handleLogout}
               startIcon={<Logout />}
-              sx={{ 
+              sx={{
                 display: { xs: 'none', sm: 'flex' },
                 borderRadius: '20px',
                 color: darkMode ? '#fff' : '#1a1a1a',
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
-                  background: darkMode 
+                  background: darkMode
                     ? 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)'
                     : 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                   color: '#fff',
@@ -208,11 +209,11 @@ export default function Header() {
             >
               Logout
             </Button>
-            
-            <IconButton 
-              color="inherit" 
+
+            <IconButton
+              color="inherit"
               onClick={handleLogout}
-              sx={{ 
+              sx={{
                 display: { xs: 'flex', sm: 'none' },
                 transition: 'transform 0.2s',
                 '&:hover': {
@@ -259,7 +260,7 @@ export default function Header() {
               style={{
                 width: '100%',
                 height: '100%',
-                background: darkMode 
+                background: darkMode
                   ? 'linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,30,30,0.95))'
                   : 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245,245,245,0.95))',
                 backdropFilter: 'blur(10px)',
@@ -310,7 +311,7 @@ export default function Header() {
                           left: 0,
                           width: '4px',
                           height: '100%',
-                          background: darkMode 
+                          background: darkMode
                             ? 'linear-gradient(45deg, #FF8E53, #FE6B8B)'
                             : 'linear-gradient(45deg, #2196F3, #21CBF3)',
                           opacity: hoveredItem === i ? 1 : 0,
@@ -324,8 +325,8 @@ export default function Header() {
                           transition={{ duration: 0.5 }}
                         >
                           {item.badge ? (
-                            <Badge 
-                              badgeContent={item.badge} 
+                            <Badge
+                              badgeContent={item.badge}
                               color="error"
                               sx={{
                                 '& .MuiBadge-badge': {
@@ -343,7 +344,7 @@ export default function Header() {
                           )}
                         </motion.div>
                       </ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary={item.text}
                         sx={{
                           '& .MuiListItemText-primary': {

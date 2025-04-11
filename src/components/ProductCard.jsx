@@ -22,7 +22,8 @@ export default function ProductCard({ product }) {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    const cartIcon = document.querySelector('.MuiSvgIcon-root[data-testid="ShoppingCartIcon"]');
+    const cartIcon = document.querySelector('#cart-icon'); // Use an id or data-testid
+    console.log('cart icon' ,cartIcon);
     const button = buttonRef.current;
     
     if (button && cartIcon) {

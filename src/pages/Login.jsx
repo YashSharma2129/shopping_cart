@@ -15,7 +15,6 @@ import {
   IconButton,
   InputAdornment,
   Container,
-  LinearProgress
 } from "@mui/material";
 import { Visibility, VisibilityOff, ShoppingBag } from '@mui/icons-material';
 import Particles from "react-tsparticles";

@@ -11,9 +11,8 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Stepper, Step, StepLabel
 } from '@mui/material';
-import { Delete, AccountBalanceWallet, ShoppingCart, Payment, Done } from '@mui/icons-material';
+import { Delete, AccountBalanceWallet, Payment, Done } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import OrderSuccess from '../components/OrderSuccess';
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
